@@ -9,6 +9,20 @@ A simple bookmark manager for saving and organizing useful links.
 - Mark favorites
 - Search and filter saved links
 
+## Screenshots
+
+### Initial page
+
+![My Bookmarks initial page](initial%20page.png)
+
+### Add a bookmark
+
+![Add bookmark form](add_bookmark.png)
+
+### Saved bookmark
+
+![Saved bookmark in the list](save_bookmark.png)
+
 ## Built with
 
 Java 17, Spring Boot, Spring MVC, Spring Data JPA, Thymeleaf, MySQL, HTML, and CSS.
