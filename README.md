@@ -1,25 +1,26 @@
 # My Bookmarks
 
-A small bookmark manager built with Java, Spring Boot, Thymeleaf, MySQL, HTML, CSS, and JavaScript. Add, edit, search, filter, favorite, and delete bookmarks. Bookmark data is stored in MySQL.
+A simple bookmark manager for saving and organizing useful links.
+
+## Features
+
+- Add, edit, and delete bookmarks
+- Group links by category and tag
+- Mark favorites
+- Search and filter saved links
+
+## Built with
+
+Java 17, Spring Boot, Spring MVC, Spring Data JPA, Thymeleaf, MySQL, HTML, and CSS.
 
 ## Run locally
 
-Requirements: Java 17 or newer, Maven, and MySQL 8.0 or newer.
+Requirements: Java 17 or newer, Maven, and MySQL 8 or newer with a `bookmark_manager` database available.
 
-This app has no user sign-in. `DB_USERNAME` and `DB_PASSWORD` are only for the MySQL connection; they are optional when using the defaults (`root` with a blank password).
-
-Create the database in MySQL:
-
-```sql
-CREATE DATABASE bookmark_manager;
-```
-
-Start the app from the project folder:
+From the project folder, run:
 
 ```powershell
 mvn spring-boot:run
 ```
 
-Open `http://localhost:8080`. Spring Boot creates the bookmarks table on first run. The default database URL is `jdbc:mysql://localhost:3306/bookmark_manager`; override it with `DB_URL` if needed. If your MySQL setup uses different connection credentials, set `DB_USERNAME` and `DB_PASSWORD` before starting the app.
-
-The page submits forms to Spring MVC. The controller uses the repository to read and update bookmark records in MySQL, and Thymeleaf renders the results.
+Open `http://localhost:8080` in your browser.
