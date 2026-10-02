@@ -6,21 +6,21 @@ A small bookmark manager built with Java, Spring Boot, Thymeleaf, MySQL, HTML, C
 
 Requirements: Java 17 or newer, Maven, and MySQL.
 
+This app has no user sign-in. `DB_USERNAME` and `DB_PASSWORD` are only for the MySQL connection; they are optional when using the defaults (`root` with a blank password).
+
 Create the database in MySQL:
 
 ```sql
 CREATE DATABASE bookmark_manager;
 ```
 
-Set your MySQL credentials in PowerShell, then start the app from the project folder:
+Start the app from the project folder:
 
 ```powershell
-$env:DB_USERNAME = "root"
-$env:DB_PASSWORD = "your-password"
 mvn spring-boot:run
 ```
 
-Open `http://localhost:8080`. Spring Boot creates the bookmarks table on first run. The default database URL is `jdbc:mysql://localhost:3306/bookmark_manager`; override it with `DB_URL` if needed.
+Open `http://localhost:8080`. Spring Boot creates the bookmarks table on first run. The default database URL is `jdbc:mysql://localhost:3306/bookmark_manager`; override it with `DB_URL` if needed. If your MySQL setup uses different connection credentials, set `DB_USERNAME` and `DB_PASSWORD` before starting the app.
 
 ## API
 
@@ -29,4 +29,4 @@ Open `http://localhost:8080`. Spring Boot creates the bookmarks table on first r
 - `PUT /api/bookmarks/{id}`
 - `DELETE /api/bookmarks/{id}`
 
-The page and API are served by the same app. There is no login or user system in this small demo.
+The page and API are served by the same app.
