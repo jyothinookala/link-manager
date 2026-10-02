@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Bookmarks</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="page">
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="My Bookmarks home"><span class="brand-mark">B</span> my bookmarks</a>
+    </header>
+
+    <section class="intro">
+      <div>
+        <p class="small-label">YOUR SAVED LINKS</p>
+        <h1 th:text="'My bookmarks'">My bookmarks</h1>
+      </div>
+      <button class="add-button" id="show-form" type="button"><span aria-hidden="true">+</span> Add bookmark</button>
+    </section>
+
+    <form class="bookmark-form" id="bookmark-form" th:action="@{/api/bookmarks}" method="post" hidden>
+      <h2 id="form-title">Add a bookmark</h2>
+      <input id="bookmark-id" type="hidden" name="id">
+      <div class="form-fields">
+        <label>Title<input id="bookmark-name" name="title" required maxlength="100" placeholder="For example, CSS Tricks"></label>
+        <label>Link<input id="bookmark-url" name="url" type="url" required placeholder="https://example.com"></label>
+        <label>Category
+          <select id="bookmark-category" name="category">
+            <option>Work</option><option>Learning</option><option>Inspiration</option><option>Other</option>
+          </select>
+        </label>
+        <label><span>Tag <span class="optional">(optional)</span></span><input id="bookmark-tag" name="tag" maxlength="30" placeholder="design, article..."></label>
+      </div>
+      <p class="form-error" id="form-error" role="alert"></p>
+      <div class="form-actions">
+        <button class="plain-button" id="cancel-form" type="button">Cancel</button>
+        <button class="add-button" type="submit" id="save-button">Save bookmark</button>
+      </div>
+    </form>
+
+    <section class="links-section" aria-label="Saved bookmarks">
+      <div class="tools-row">
+        <label class="search-label"><span aria-hidden="true">⌕</span><span class="visually-hidden">Search bookmarks</span><input id="search" type="search" placeholder="Search bookmarks..."></label>
+        <label class="filter-label">Show
+          <select id="filter" aria-label="Filter bookmarks">
+            <option value="all">All bookmarks</option>
+            <option value="favorites">Favorites</option>
+            <option value="Work">Work</option>
+            <option value="Learning">Learning</option>
+            <option value="Inspiration">Inspiration</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+      </div>
+      <p class="list-label" id="list-label">YOUR LINKS</p>
+      <div id="bookmark-list" class="bookmark-list" aria-live="polite"></div>
+      <p class="empty-message" id="empty-message" hidden>No bookmarks here yet. Add one to get started.</p>
+      <p class="status-message" id="status-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <footer>My Bookmarks</footer>
+  </main>
+</body>
+</html>
