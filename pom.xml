@@ -58,10 +58,7 @@
       <resource>
         <directory>${project.basedir}</directory>
         <targetPath>static</targetPath>
-        <includes>
-          <include>styles.css</include>
-          <include>app.js</include>
-        </includes>
+        <includes><include>styles.css</include></includes>
       </resource>
     </resources>
     <plugins>

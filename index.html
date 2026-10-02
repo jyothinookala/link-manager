@@ -4,13 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My Bookmarks</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="styles.css" th:href="@{/styles.css}">
 </head>
 <body>
   <main class="page">
     <header class="site-header">
-      <a class="brand" href="#" aria-label="My Bookmarks home"><span class="brand-mark">B</span> my bookmarks</a>
+      <a class="brand" href="/" aria-label="My Bookmarks home"><span class="brand-mark">B</span> my bookmarks</a>
     </header>
 
     <section class="intro">
@@ -18,47 +17,72 @@
         <p class="small-label">YOUR SAVED LINKS</p>
         <h1 th:text="'My bookmarks'">My bookmarks</h1>
       </div>
-      <button class="add-button" id="show-form" type="button"><span aria-hidden="true">+</span> Add bookmark</button>
     </section>
 
-    <form class="bookmark-form" id="bookmark-form" th:action="@{/api/bookmarks}" method="post" hidden>
-      <h2 id="form-title">Add a bookmark</h2>
-      <input id="bookmark-id" type="hidden" name="id">
-      <div class="form-fields">
-        <label>Title<input id="bookmark-name" name="title" required maxlength="100" placeholder="For example, CSS Tricks"></label>
-        <label>Link<input id="bookmark-url" name="url" type="url" required placeholder="https://example.com"></label>
-        <label>Category
-          <select id="bookmark-category" name="category">
-            <option>Work</option><option>Learning</option><option>Inspiration</option><option>Other</option>
-          </select>
-        </label>
-        <label><span>Tag <span class="optional">(optional)</span></span><input id="bookmark-tag" name="tag" maxlength="30" placeholder="design, article..."></label>
-      </div>
-      <p class="form-error" id="form-error" role="alert"></p>
-      <div class="form-actions">
-        <button class="plain-button" id="cancel-form" type="button">Cancel</button>
-        <button class="add-button" type="submit" id="save-button">Save bookmark</button>
-      </div>
-    </form>
+    <details class="bookmark-form" th:open="${formOpen}">
+      <summary><span class="summary-plus" aria-hidden="true">+</span><span th:text="${editing ? 'Edit bookmark' : 'Add a bookmark'}">Add a bookmark</span></summary>
+      <form th:action="@{/bookmarks}" method="post" th:object="${bookmark}">
+        <input th:if="${editing}" type="hidden" name="id" th:value="${bookmark.id}">
+        <div class="form-fields">
+          <label>Title<input th:field="*{title}" required maxlength="100" placeholder="For example, CSS Tricks"></label>
+          <label>Link<input th:field="*{url}" type="url" required placeholder="https://example.com"></label>
+          <label>Category
+            <select th:field="*{category}">
+              <option value="Work">Work</option><option value="Learning">Learning</option><option value="Inspiration">Inspiration</option><option value="Other">Other</option>
+            </select>
+          </label>
+          <label><span>Tag <span class="optional">(optional)</span></span><input th:field="*{tag}" maxlength="30" placeholder="design, article..."></label>
+        </div>
+        <div class="form-errors" th:if="${#fields.hasAnyErrors()}">
+          <p th:each="error : ${#fields.allErrors()}" th:text="${error}">Please check the form.</p>
+        </div>
+        <div class="form-actions">
+          <a class="plain-button" th:if="${editing}" th:href="@{/}">Cancel</a>
+          <button class="add-button" type="submit">Save bookmark</button>
+        </div>
+      </form>
+    </details>
 
     <section class="links-section" aria-label="Saved bookmarks">
-      <div class="tools-row">
-        <label class="search-label"><span aria-hidden="true">⌕</span><span class="visually-hidden">Search bookmarks</span><input id="search" type="search" placeholder="Search bookmarks..."></label>
+      <form class="tools-row" method="get" th:action="@{/}">
+        <label class="search-label"><span aria-hidden="true">⌕</span><span class="visually-hidden">Search bookmarks</span><input name="query" type="search" placeholder="Search bookmarks..." th:value="${query}"></label>
         <label class="filter-label">Show
-          <select id="filter" aria-label="Filter bookmarks">
-            <option value="all">All bookmarks</option>
-            <option value="favorites">Favorites</option>
-            <option value="Work">Work</option>
-            <option value="Learning">Learning</option>
-            <option value="Inspiration">Inspiration</option>
-            <option value="Other">Other</option>
+          <select name="category" aria-label="Filter bookmarks">
+            <option value="all" th:selected="${selectedCategory == 'all'}">All bookmarks</option>
+            <option value="favorites" th:selected="${selectedCategory == 'favorites'}">Favorites</option>
+            <option value="Work" th:selected="${selectedCategory == 'Work'}">Work</option>
+            <option value="Learning" th:selected="${selectedCategory == 'Learning'}">Learning</option>
+            <option value="Inspiration" th:selected="${selectedCategory == 'Inspiration'}">Inspiration</option>
+            <option value="Other" th:selected="${selectedCategory == 'Other'}">Other</option>
           </select>
         </label>
+        <button class="plain-button" type="submit">Filter</button>
+        <a class="plain-button" th:href="@{/}">Clear</a>
+      </form>
+      <p class="list-label">YOUR LINKS</p>
+      <div class="bookmark-list" th:if="${!#lists.isEmpty(bookmarks)}">
+        <article class="bookmark-row" th:each="bookmark : ${bookmarks}">
+          <span class="link-mark" aria-hidden="true" th:text="${#strings.substring(bookmark.title, 0, 1).toUpperCase()}">B</span>
+          <div class="bookmark-info">
+            <a class="bookmark-title" th:href="${bookmark.url}" target="_blank" rel="noopener noreferrer" th:text="${bookmark.title}">Bookmark title</a>
+            <div class="bookmark-url" th:text="${bookmark.url}">example.com</div>
+            <div class="bookmark-meta">
+              <span class="category" th:text="${bookmark.category}">Work</span>
+              <span class="tag" th:if="${!#strings.isEmpty(bookmark.tag)}" th:text="${bookmark.tag}">Tag</span>
+            </div>
+          </div>
+          <div class="row-actions">
+            <form th:action="@{/bookmarks/{id}/favorite(id=${bookmark.id})}" method="post">
+              <button class="row-button" type="submit" th:classappend="${bookmark.favorite} ? ' is-favorite' : ''" th:attr="aria-label=${bookmark.favorite ? 'Remove from favorites' : 'Add to favorites'}" th:text="${bookmark.favorite ? '★' : '☆'}">☆</button>
+            </form>
+            <a class="row-button" th:href="@{/(edit=${bookmark.id})}">Edit</a>
+            <form th:action="@{/bookmarks/{id}/delete(id=${bookmark.id})}" method="post">
+              <button class="row-button remove" type="submit">Delete</button>
+            </form>
+          </div>
+        </article>
       </div>
-      <p class="list-label" id="list-label">YOUR LINKS</p>
-      <div id="bookmark-list" class="bookmark-list" aria-live="polite"></div>
-      <p class="empty-message" id="empty-message" hidden>No bookmarks here yet. Add one to get started.</p>
-      <p class="status-message" id="status-message" role="status" aria-live="polite"></p>
+      <p class="empty-message" th:if="${#lists.isEmpty(bookmarks)}">No bookmarks found. Add one or change your filter.</p>
     </section>
 
     <footer>My Bookmarks</footer>
